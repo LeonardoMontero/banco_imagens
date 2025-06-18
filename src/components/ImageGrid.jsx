@@ -1,8 +1,11 @@
 import React from "react";
 import "../index.css";
+import Header from "./Header";
 
 // Pega todas as imagens na pasta assets com extensão jpg, png, jpeg, svg
-const imageModules = import.meta.glob("../assets/*.{jpg,jpeg,png,svg}", { eager: true });
+const imageModules = import.meta.glob("../assets/*.{jpg,jpeg,png,svg}", {
+  eager: true,
+});
 
 const images = Object.entries(imageModules).map(([path, module]) => {
   const name = path.split("/").pop(); // extrai só o nome do arquivo
@@ -19,12 +22,14 @@ export default function ImageGrid({ searchQuery }) {
   );
 
   return (
-    <div className="masonry">
-      {filteredImages.map(({ src, alt, name }, index) => (
-        <a key={index} href={src} download={name}>
-          <img src={src} alt={alt} loading="lazy" />
-        </a>
-      ))}
+    <div className="container-image-grid">
+      <div className="masonry">
+        {filteredImages.map(({ src, alt, name }, index) => (
+          <a key={index} href={src} download={name}>
+            <img src={src} alt={alt} loading="lazy" />
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

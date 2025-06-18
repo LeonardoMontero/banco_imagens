@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import Login from "./Login";
 import Criarlogin from "./Criarlogin";
 import { useState } from "react";
+import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,9 +14,19 @@ export default function App() {
     <BrowserRouter>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <Routes>
-        <Route path="/" element={<ImageGrid searchQuery={searchQuery} />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <ImageGrid
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+            </PrivateRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Criarlogin />} />
+        <Route path="/cadastro" element={<Criarlogin />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -1,20 +1,47 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
+import { useSnackbar } from "notistack";
+import makeLogin from "./api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e) {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    alert(`Email: ${email}\nSenha: ${password}`);
+
+    const make = await makeLogin(email, password);
+
+    if (make.status >= 400) {
+      return enqueueSnackbar({
+        message: make?.data?.message,
+        variant: "error",
+        anchorOrigin: { horizontal: "center", vertical: "top" },
+      });
+    }
+
+    localStorage.setItem("isRegister", true);
+
+    enqueueSnackbar({
+      message: make?.data?.message,
+      variant: "success",
+      anchorOrigin: { horizontal: "center", vertical: "top" },
+    });
+
+    setTimeout(() => {
+      navigate("../dashboard", { replace: true });
+    }, 1200);
   }
 
   return (
     <div className="login-page">
       <div className="login-card">
-        <h2>Entrar na sua conta</h2>
+        <h2>Entrar na sua conta3</h2>
         <form onSubmit={handleSubmit} className="login-form">
           <label htmlFor="email">E-mail</label>
           <input
@@ -39,7 +66,7 @@ export default function Login() {
           <button type="submit">Entrar</button>
         </form>
         <p className="signup">
-          Não tem conta? <Link to="/signup">Crie uma agora</Link>
+          Não tem conta? <Link to="/cadastro">Crie uma agora</Link>
         </p>
       </div>
     </div>

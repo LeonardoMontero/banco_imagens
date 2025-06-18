@@ -1,25 +1,40 @@
 import React, { useState } from "react";
 import "./Criarlogin.css";
+import { useSnackbar } from "notistack";
+import { createUser } from "./api";
+import { useNavigate } from "react-router-dom";
 
 export default function Criarlogin() {
-  const [formData, setFormData] = useState({
-    login: "",
-    email: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dados de cadastro:", formData);
+    e.preventDefault();
 
-    setFormData({ login: "", email: "" });
+    const make = await createUser(email, password);
+
+    if (make.status >= 400) {
+      return enqueueSnackbar({
+        message: make?.data?.message,
+        variant: "error",
+        anchorOrigin: { horizontal: "center", vertical: "top" },
+      });
+    }
+
+    enqueueSnackbar({
+      message: make?.data?.message,
+      variant: "success",
+      anchorOrigin: { horizontal: "center", vertical: "top" },
+    });
+
+    setTimeout(() => {
+      navigate("../login");
+    }, 1000);
   };
 
   return (
@@ -27,23 +42,23 @@ export default function Criarlogin() {
       <h2>Cadastro</h2>
       <form className="register-form" onSubmit={handleSubmit}>
         <label>
-          Login:
+          E-mail:
           <input
             type="text"
             name="login"
-            value={formData.login}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </label>
 
         <label>
-          E-mail:
+          Senha:
           <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </label>
