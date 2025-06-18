@@ -14,6 +14,7 @@ export default function App() {
     <BrowserRouter>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route
           path="/dashboard"
           element={
